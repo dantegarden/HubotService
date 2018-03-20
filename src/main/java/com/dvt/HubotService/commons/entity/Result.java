@@ -5,11 +5,18 @@ public class Result {
 	private Boolean success; // 是否成功
 	private String msg; // 消息
 	private Object data; // 返回的数据
-
+	private String actionType;//动作类型代码
+	
 	public Result() {
 
 	}
-
+	
+	public static Result getInstance(Integer error_code, String actionType, Object data){
+		Result r= new Result(error_code, data);
+		r.setActionType(actionType);
+		return r;
+	}
+	
 	public Result(Boolean success) {
 		super();
 		this.success = success;
@@ -73,4 +80,14 @@ public class Result {
 		this.error_code = error_code;
 		this.data = data;
 	}
+
+	public String getActionType() {
+		return actionType;
+	}
+
+	public void setActionType(String actionType) {
+		this.actionType = actionType;
+	}
+	
+	
 }

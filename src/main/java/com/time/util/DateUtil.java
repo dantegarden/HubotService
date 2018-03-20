@@ -191,7 +191,67 @@ public class DateUtil extends CommonDateUtil {
             return false;
         }
     }
-
+    
+    public static String dateToUpper(Date date, String format){
+    	String res = null;
+    	if(date!=null){  
+            Calendar ca = Calendar.getInstance();  
+            ca.setTime(date);  
+            int year = ca.get(Calendar.YEAR);  
+            int month = ca.get(Calendar.MONTH) + 1;  
+            int day = ca.get(Calendar.DAY_OF_MONTH);
+            int hour = ca.get(Calendar.HOUR_OF_DAY);
+            int minute = ca.get(Calendar.MINUTE);
+            int second = ca.get(Calendar.SECOND);
+            format =format.replace("yyyy", numToUpper(year));
+            format = format.replace("MM", monthToUppder(month));
+            format = format.replace("dd", dayToUppder(day));
+            format = format.replace("HH", dayToUppder(hour));
+            format = format.replace("mm", dayToUppder(minute));
+            format = format.replace("ss", dayToUppder(second));
+            res= format;
+        }  
+    	return res;
+    }
+    
+    // 将数字转化为大写  
+    public static String numToUpper(int num) {  
+        // String u[] = {"零","壹","贰","叁","肆","伍","陆","柒","捌","玖"};  
+        String u[] = { "零", "一", "二", "三", "四", "五", "六", "七", "八", "九" };  
+        char[] str = String.valueOf(num).toCharArray();  
+        String rstr = "";  
+        for (int i = 0; i < str.length; i++) {  
+            rstr = rstr + u[Integer.parseInt(str[i] + "")];  
+        }  
+        return rstr;  
+    }  
+  
+    // 月转化为大写  
+    public static String monthToUppder(int month) {  
+        if (month < 10) {  
+            return numToUpper(month);  
+        } else if (month == 10) {  
+            return "十";  
+        } else {  
+            return "十" + numToUpper(month - 10);  
+        }  
+    }  
+  
+    // 日转化为大写  
+    public static String dayToUppder(int day) {  
+        if (day < 20) {  
+            return monthToUppder(day);  
+        } else {  
+            char[] str = String.valueOf(day).toCharArray();  
+            if (str[1] == '0') {  
+                return numToUpper(Integer.parseInt(str[0] + "")) + "十";  
+            } else {  
+                return numToUpper(Integer.parseInt(str[0] + "")) + "十"  
+                        + numToUpper(Integer.parseInt(str[1] + ""));  
+            }  
+        }  
+    }  
+    
     //日期格式为:年 月 日 ；如：2016年04月06日
     public static final String FORMAT_CALENDAR_DATE = "yyyy\u5E74MM\u6708dd\u65E5E";
     //时间格式 为：小时：分 ;如：12:30

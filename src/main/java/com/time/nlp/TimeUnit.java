@@ -1,6 +1,7 @@
 package com.time.nlp;
 
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -32,6 +33,10 @@ public class TimeUnit {
     private Boolean isAllDayTime = true;
     private boolean isFirstTimeSolveContext = true;
 
+    private Date boundaryTime;
+    private Boolean boundaryWeekFlag = false;
+    private Integer boundaryWeekType = null;
+    
     TimeNormalizer normalizer = null;
     public TimePoint _tp = new TimePoint();
     public TimePoint _tp_origin = new TimePoint();
@@ -72,7 +77,11 @@ public class TimeUnit {
     public Date getTime() {
         return time;
     }
-
+    
+    public Date getBoundaryTime() {
+        return boundaryTime;
+    }
+    
     /**
      * 年-规范化方法
      * <p>
@@ -700,6 +709,9 @@ public class TimeUnit {
                 week = Integer.parseInt(match.group());
             } catch (NumberFormatException e) {
                 week = 1;
+                //add 2018.03.12 by lijing
+                boundaryWeekFlag = true;
+                boundaryWeekType = -2;
             }
             if (week == 7)
                 week = 1;
@@ -719,6 +731,9 @@ public class TimeUnit {
                 week = Integer.parseInt(match.group());
             } catch (NumberFormatException e) {
                 week = 1;
+                //add 2018.03.12 by lijing
+                boundaryWeekFlag = true;
+                boundaryWeekType = -1;
             }
             if (week == 7)
                 week = 1;
@@ -736,8 +751,11 @@ public class TimeUnit {
             int week;
             try {
                 week = Integer.parseInt(match.group());
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException e) {//校验“下周”、“下星期”
                 week = 1;
+                //add 2018.03.12 by lijing
+                boundaryWeekFlag = true;
+                boundaryWeekType = 1;
             }
             if (week == 7)
                 week = 1;
@@ -757,6 +775,9 @@ public class TimeUnit {
                 week = Integer.parseInt(match.group());
             } catch (NumberFormatException e) {
                 week = 1;
+                //add 2018.03.12 by lijing
+                boundaryWeekFlag = true;
+                boundaryWeekType = 2;
             }
             if (week == 7)
                 week = 1;
@@ -765,8 +786,8 @@ public class TimeUnit {
             calendar.add(Calendar.WEEK_OF_MONTH, 2);
             calendar.set(Calendar.DAY_OF_WEEK, week);
         }
-
-        rule = "(?<=((?<!(上|下))(周|星期)))[1-7]?";
+        
+        rule = "(?<=((这|本)(周|星期)))[1-7]?";
         pattern = Pattern.compile(rule);
         match = pattern.matcher(Time_Expression);
         if (match.find()) {
@@ -774,8 +795,34 @@ public class TimeUnit {
             int week;
             try {
                 week = Integer.parseInt(match.group());
-            } catch (NumberFormatException e) {
+            } catch (NumberFormatException e) {//这周，本周
                 week = 1;
+                boundaryWeekFlag = true;//本周
+                boundaryWeekType = 0;
+            }
+            if (week == 7)
+                week = 1;
+            else
+                week++;
+            calendar.add(Calendar.WEEK_OF_MONTH, 0);
+            calendar.set(Calendar.DAY_OF_WEEK, week);
+            //不做未来预测
+        }
+        
+        //匹配周几、星期几
+        rule = "(?<=((?<!(上|下|这|本))(周|星期)))[1-7]?";
+        pattern = Pattern.compile(rule);
+        match = pattern.matcher(Time_Expression);
+        if (match.find()) {
+            flag[2] = true;
+            int week;
+            try {
+                week = Integer.parseInt(match.group());
+                //boundaryThisWeekFlag = true;//对于"周几"做未来预测,"本周几"的形式，不做未来预测
+            } catch (NumberFormatException e) {//这周，本周
+                week = 1;
+                boundaryWeekFlag = true;//本周
+                boundaryWeekType = 0;
             }
             if (week == 7)
                 week = 1;
@@ -868,32 +915,59 @@ public class TimeUnit {
 
         Calendar cale = Calendar.getInstance();            //leverage a calendar object to figure out the final time
         cale.clear();
+        
+        Calendar boundary = Calendar.getInstance();
+        boundary.clear();
+        
         if (Integer.parseInt(_result_tmp[0]) != -1) {
             Time_Norm += _result_tmp[0] + "年";
             cale.set(Calendar.YEAR, Integer.valueOf(_result_tmp[0]));
+            boundary.set(Calendar.YEAR, Integer.valueOf(_result_tmp[0]));
             if (Integer.parseInt(_result_tmp[1]) != -1) {
                 Time_Norm += _result_tmp[1] + "月";
                 cale.set(Calendar.MONTH, Integer.valueOf(_result_tmp[1]) - 1);
+                boundary.set(Calendar.MONTH, Integer.valueOf(_result_tmp[1]) - 1);
                 if (Integer.parseInt(_result_tmp[2]) != -1) {
                     Time_Norm += _result_tmp[2] + "日";
                     cale.set(Calendar.DAY_OF_MONTH, Integer.valueOf(_result_tmp[2]));
+                    boundary.set(Calendar.DAY_OF_MONTH, Integer.valueOf(_result_tmp[2]));
                     if (Integer.parseInt(_result_tmp[3]) != -1) {
                         Time_Norm += _result_tmp[3] + "时";
                         cale.set(Calendar.HOUR_OF_DAY, Integer.valueOf(_result_tmp[3]));
+                        boundary.set(Calendar.HOUR_OF_DAY, Integer.valueOf(_result_tmp[3]));
                         if (Integer.parseInt(_result_tmp[4]) != -1) {
                             Time_Norm += _result_tmp[4] + "分";
                             cale.set(Calendar.MINUTE, Integer.valueOf(_result_tmp[4]));
+                            boundary.set(Calendar.MINUTE, Integer.valueOf(_result_tmp[4]));
                             if (Integer.parseInt(_result_tmp[5]) != -1) {
                                 Time_Norm += _result_tmp[5] + "秒";
                                 cale.set(Calendar.SECOND, Integer.valueOf(_result_tmp[5]));
+                            }else{//秒-end
+                            	boundary.add(Calendar.SECOND, 59);
                             }
+                        }else{//没有秒，边界默认该分钟最后一秒-end
+                        	boundary.roll(Calendar.MINUTE, -1);
+                        	boundary.add(Calendar.SECOND, 59);
                         }
+                    }else{//没有分钟，边界默认该小时最后一分钟-end
+                    	if(boundaryWeekFlag){//针对“上周”、“下周”、“本周”、“上上周”、“下下周”
+                    		boundary.add(Calendar.DAY_OF_YEAR, 6);//往后推六天
+                    	}
+                    	boundary.roll(Calendar.HOUR_OF_DAY, -1);
+                    	boundary.add(Calendar.SECOND, 60*60-1);
                     }
+                }else{//没有日，边界默认该月最后一天-end
+                	boundary.roll(Calendar.DAY_OF_MONTH, -1);
+                	boundary.add(Calendar.SECOND, 24*60*60-1);
                 }
+            }else{//没有月，边界默认最后12月31日-end
+            	boundary.roll(Calendar.DAY_OF_YEAR, -1);
+            	boundary.add(Calendar.SECOND, 24*60*60-1);
             }
-        }
+        }//年-end
         time = cale.getTime();
-
+        boundaryTime = boundary.getTime();
+        
         time_full = _tp.tunit.clone();
 //		time_origin = _tp_origin.tunit.clone(); comment by kexm
     }
@@ -988,8 +1062,11 @@ public class TimeUnit {
         if (weekday == 1) {
             weekday = 7;
         }
-        if (curWeekday < weekday) {
+        if (curWeekday < weekday) {// modifed 2018.03.12 by lijing 改小于为小于等于
             return;
+        }
+        if (boundaryWeekFlag && boundaryWeekType==0){//本周 这周 不做未来预测
+        	return;
         }
         //准备增加的时间单位是被检查的时间的上一级，将上一级时间+1
         c.add(Calendar.WEEK_OF_YEAR, 1);

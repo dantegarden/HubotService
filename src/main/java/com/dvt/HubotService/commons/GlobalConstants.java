@@ -18,6 +18,8 @@ import org.dom4j.Node;
 
 import com.dvt.HubotService.business.main.controller.MyController;
 import com.dvt.HubotService.business.main.dto.AuthDTO;
+import com.dvt.HubotService.business.main.dto.DictDTO;
+import com.dvt.HubotService.business.main.dto.DictTypeDTO;
 import com.dvt.HubotService.business.main.dto.HubotInterface;
 import com.dvt.HubotService.commons.utils.XmlUtils;
 import com.google.common.collect.Lists;
@@ -36,8 +38,47 @@ public class GlobalConstants {
 	
 	public static AuthDTO myAuth = new AuthDTO(); 
 	public static Map<String,String> aiSessions = Maps.newHashMap(); 
+	public static Map<String,String> sceneWithUserSessions = Maps.newHashMap();//session缓存，以sceneid_userid为key
+	public static Map<String,DictTypeDTO> codeDicts = Maps.newHashMap(); //字典缓存
+	
+	private static void readHubotInterfaceConfig(List<Node> hiFields){
+		for (Node _hi : hiFields) {
+			Element hi = (Element)_hi;
+			String interfaceKey = hi.attributeValue("name");//接口的唯一标识
+			Boolean executable = Boolean.valueOf(hi.attributeValue("executable"));
+			if(executable){//标注有效
+				System.out.println("装载接口"+interfaceKey);
+				HubotInterface O = new HubotInterface();
+				List<Element> hiel = hi.elements();
+				for (Element element : hiel) {
+					if(element.getName().equals("description")){
+						O.setDescription(element.getText());
+					}else if(element.getName().equals("answer")){
+						O.setAnswer(element.getText());
+					}else if(element.getName().equals("entryUrl")){
+						O.setEntryUrl(element.getText());
+					}else if(element.getName().equals("dictUrl")){
+						O.setDictUrl(element.getText());
+					}else if(element.getName().equals("postObject")){
+						List<Element> els = element.elements();//处理待发送参数
+						if(els.size()==1){
+							Element belowPostObjectels = els.get(0);
+							if("list".equals(belowPostObjectels.getName())){
+								O.setPostObjectList(O.arrangeParamsArray(belowPostObjectels));
+							}else if("object".equals(belowPostObjectels.getName())){
+								O.setPostObject(O.arrangeParamsObject(belowPostObjectels));
+							}
+						}
+					}
+				}
+				interfaces.put(interfaceKey, O);
+			}
+		}
+	}
 	
 	static{
+		Properties prop = new Properties();
+		
 		//百度AI的对话单元 与 被调系统的关联关系配置
 		if(interfaces.isEmpty()){
 			//解析Xml
@@ -45,36 +86,18 @@ public class GlobalConstants {
 			try {
 				filePath = GlobalConstants.class.getClassLoader().getResource("hubot.xml").toURI().getPath();
 				Document document = XmlUtils.read(filePath);
+				//对于直接在这里配置的接口
 				List<Node> hiFields = XmlUtils.XpathQuery(document, "/configuration/hubot-interface");
-				for (Node _hi : hiFields) {
-					Element hi = (Element)_hi;
-					String interfaceKey = hi.attributeValue("name");//接口的唯一标识
-					Boolean executable = Boolean.valueOf(hi.attributeValue("executable"));
-					if(executable){//标注有效
-						System.out.println("装载接口"+interfaceKey);
-						HubotInterface O = new HubotInterface();
-						List<Element> hiel = hi.elements();
-						for (Element element : hiel) {
-							if(element.getName().equals("description")){
-								O.setDescription(element.getText());
-							}else if(element.getName().equals("answer")){
-								O.setAnswer(element.getText());
-							}else if(element.getName().equals("entryUrl")){
-								O.setEntryUrl(element.getText());
-							}else if(element.getName().equals("postObject")){
-								List<Element> els = element.elements();//处理待发送参数
-								if(els.size()==1){
-									Element belowPostObjectels = els.get(0);
-									if("list".equals(belowPostObjectels.getName())){
-										O.setPostObjectList(O.arrangeParamsArray(belowPostObjectels));
-									}else if("object".equals(belowPostObjectels.getName())){
-										O.setPostObject(O.arrangeParamsObject(belowPostObjectels));
-									}
-								}
-							}
-						}
-						interfaces.put(interfaceKey, O);
-					}
+				readHubotInterfaceConfig(hiFields);
+				//对于要导入的其他配置文件
+				List<Node> himFields = XmlUtils.XpathQuery(document, "/configuration/hubot-import");
+				for (Node _him : himFields) {
+					Element him = (Element)_him;
+					String resourceFileName = him.attributeValue("resource");
+					String resourceFilePath = GlobalConstants.class.getClassLoader().getResource(resourceFileName).toURI().getPath();
+					Document importDocument = XmlUtils.read(resourceFilePath);
+					List<Node> himConfigFields = XmlUtils.XpathQuery(importDocument, "/configuration/hubot-interface");
+					readHubotInterfaceConfig(himConfigFields);
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -83,7 +106,7 @@ public class GlobalConstants {
 		
 		//百度api的错误状态
 		if(baiduUnitErrKv.isEmpty()){
-			Properties prop = new Properties();
+			prop = new Properties();
 			try {
 				prop.load(GlobalConstants.class.getClassLoader().getResourceAsStream("error.properties"));
 				Enumeration en = prop.propertyNames();

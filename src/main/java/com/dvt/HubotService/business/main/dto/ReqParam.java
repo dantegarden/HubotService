@@ -6,6 +6,7 @@ public class ReqParam {
 	private String timestamp;
 	private String signature;
 	private String userid;
+	private String roomid;
 
 	private HubotInterface hif;
 
@@ -50,17 +51,26 @@ public class ReqParam {
 	}
 
 	public ReqParam(String nonce, String timestamp, String signature,
-			String userid, HubotInterface hif) {
+			String userid, String roomid, HubotInterface hif) {
 		super();
 		this.nonce = nonce;
 		this.timestamp = timestamp;
 		this.signature = signature;
 		this.userid = userid;
+		this.roomid = roomid;
 		this.hif = hif;
 	}
 
 	public ReqParam() {
 		super();
+	}
+
+	public String getRoomid() {
+		return roomid;
+	}
+
+	public void setRoomid(String roomid) {
+		this.roomid = roomid;
 	}
 	
 	

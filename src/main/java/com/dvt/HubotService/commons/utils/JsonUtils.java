@@ -6,13 +6,16 @@ import java.util.List;
 import java.util.Map;
 
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParser;
 import com.google.gson.reflect.TypeToken;
 
 public class JsonUtils {
-	private static Gson gson = new Gson();
+	private static final Gson gson = new Gson();
+	private static final Gson exposeGson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
+	
 	/**
      * JSON字符串转JavaBean
      * @param json
@@ -46,5 +49,15 @@ public class JsonUtils {
         Map<String, String> maps = gson.fromJson(json, new TypeToken<Map<String, String>>() {
         }.getType());
         return maps;
+    }
+    
+    /**
+     * JSON字符串转JavaBean
+     * @param json
+     * @param className
+     */
+	public static <T> T jsonToJavaBeanExcludeFieldsWithoutExposeAnnotation(String json,Class<T> className) {
+        T bean = exposeGson.fromJson(json, className);//对于javabean直接给出class实例
+        return bean;
     }
 }

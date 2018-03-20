@@ -30,6 +30,74 @@ public class HttpHelper {
 	 * @return			response
 	 * @throws IOException
 	 */
+	public static String startPost(String url, Map<String,String> params,String content_type)
+			throws IOException {
+		OutputStreamWriter out = null;
+        BufferedReader in = null;        
+        HttpURLConnection conn = null;
+        StringBuilder result = new StringBuilder(); 
+        try {
+            URL _url = new URL(url);
+            conn = (HttpURLConnection)_url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setUseCaches(false);
+            conn.setInstanceFollowRedirects(true);
+            // 发送POST请求必须设置为true
+            conn.setDoOutput(true);
+            conn.setDoInput(true);
+            //设置连接超时时间和读取超时时间
+            conn.setConnectTimeout(20000);
+            conn.setReadTimeout(60000);
+            conn.setRequestProperty("Content-Type", content_type);//"application/x-www-form-urlencoded;charset=UTF-8"
+            conn.connect();
+            
+            
+            out = new OutputStreamWriter(conn.getOutputStream());  
+            // POST的请求参数写在正文中
+            if(params!=null&&!params.isEmpty()){
+            	JSONObject obj = new JSONObject();
+            	for(String paramkey:params.keySet()){
+            		 out.write(paramkey+"="+URLEncoder.encode(params.get(paramkey),"UTF-8"));
+            	}
+            	//out.write(obj.toString());
+            }
+            out.flush();  
+            out.close();
+            // 取得输入流，并使用Reader读取  
+            in = new BufferedReader(new InputStreamReader(conn.getInputStream(), "UTF-8"));
+            String line;
+            while ((line = in.readLine()) != null) {
+                result.append(line);
+            }
+            return result.toString();
+        } catch (Exception e) {
+            e.printStackTrace();
+            //TODO
+            return "";
+            //return HttpHelper.startPost(url, params);
+        }
+        //关闭输出流、输入流
+        finally{
+            try{
+                if(out!=null){
+                    out.close();
+                }
+                if(in!=null){
+                    in.close();
+                }
+            }
+            catch(IOException ex){
+                ex.printStackTrace();
+            }
+        }
+	}
+	/**
+	 * 通用POST方法
+	 * @param url 		请求URL
+	 * @param param 	请求参数，如：username=test&password=1
+	 * @return			response
+	 * @throws IOException
+	 */
 	public static String startPost(String url, Map<String,String> params)
 			throws IOException {
 		OutputStreamWriter out = null;
@@ -159,6 +227,8 @@ public class HttpHelper {
             }
         }
 	}
+	
+	
 	
 	public static String getAuth() {
         // 获取token地址

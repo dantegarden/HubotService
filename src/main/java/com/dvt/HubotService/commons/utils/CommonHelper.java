@@ -12,8 +12,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.apache.commons.lang3.StringUtils;
+import org.junit.Test;
+
+import com.time.util.DateUtil;
 
 /**
  * 通用辅助类
@@ -445,4 +450,24 @@ public final class CommonHelper {
 		return timeField;
 	}
 	
-}
+	public static String formatDateStr(String commonDateStr, String format){
+		Date cdate = CommonHelper.str2Date(commonDateStr, CommonHelper.DF_DATE_TIME);
+		return CommonHelper.date2Str(cdate, format);
+	}
+	
+	@Test
+	public void getUpperNumFromStr(){
+		String regEx = "([0-9]{1,4})年";
+		Pattern p = Pattern.compile(regEx);
+		Matcher m = p.matcher("2017年1月");
+		//将输入的字符串中非数字部分用空格取代并存入一个字符串
+		while(m.find()){
+			System.out.println(DateUtil.numToUpper(Integer.parseInt(m.group(1))));
+		}
+//		String string = m.replaceAll(" ").trim();
+//		String[] strArr = string.split(" ");
+//		for(String s:strArr){
+//			System.out.println(Integer.parseInt(s));
+//		}
+	}
+}	

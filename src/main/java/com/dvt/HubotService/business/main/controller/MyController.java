@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -71,13 +72,14 @@ public class MyController {
 	@RequestMapping("test")
 	@ResponseBody
 	public Result test(HttpServletRequest request) throws OApiException, IOException {
-		String myMes = "我要加班。从今晚6点到9点。";
-		String userid = "testUserId";
-		return analysis(myMes, userid);
+		String myMes = request.getParameter("myMes");//"我要加班。从今晚6点到9点。";
+		String userid = request.getParameter("userid");//"testUserId";
+		String roomid = request.getParameter("roomid");//"testRoomId";
+		return analysis(myMes, userid, roomid);
 	}
 	
 	/**百度AI分析**/
-	private Result analysis(String myMes, String userid) throws OApiException, IOException{
+	private Result analysis(String myMes, String userid, String roomid) throws OApiException, IOException{
 		
 		//看看是否这个用户是否在会话中，没有就传空
 		String session_id = "";
@@ -183,7 +185,7 @@ public class MyController {
 						
 						String entryUrl = myHif.getEntryUrl();//被调系统的URL
 						//TODO 替换 userid 来自机器人发送
-						ReqParam rp = new ReqParam(nonceStr, timeStamp, signature, userid, myHif);
+						ReqParam rp = new ReqParam(nonceStr, timeStamp, signature, userid, roomid, myHif);
 						
 						//调接口  处理结果由被调系统回复
 						Map<String,String> params = Maps.newHashMap();
@@ -192,7 +194,9 @@ public class MyController {
 						//成功执行时的回话
 						say = myHif.getAnswer();
 						//TODO 解开注释
-						//String responseJson = HttpHelper.startPost(entryUrl, params);
+						HttpHelper.setContentType("application/x-www-form-urlencoded;charset=UTF-8");
+						String responseJson = HttpHelper.startPost(entryUrl, params);
+						System.out.println(responseJson);
 						return new Result(1, say, null);
 					}
 				}else{
@@ -221,11 +225,10 @@ public class MyController {
 	/**
 	 * 正式接口
 	 * **/
-	@RequestMapping("show")
+	@RequestMapping(value="show",method = RequestMethod.POST)
 	@ResponseBody
-	public Result show(HttpServletRequest request) throws OApiException, IOException {
+	public Result  show(HttpServletRequest request) throws OApiException, IOException {
 		Map<String,String> params = Maps.newHashMap();
-		
 		Enumeration pnu=request.getParameterNames(); 
 		while(pnu.hasMoreElements()){  
 			String paraName=(String)pnu.nextElement();  
@@ -236,7 +239,8 @@ public class MyController {
 					//TODO 1.分词  语义解析
 					String myMes = hubotMsg.getMessage();
 					String userid = hubotMsg.getUserid();
-					return this.analysis(myMes, userid);
+					String roomid = hubotMsg.getRoomid();
+					return this.analysis(myMes, userid, roomid);
 					
 				} catch (Exception e) {
 					e.printStackTrace();

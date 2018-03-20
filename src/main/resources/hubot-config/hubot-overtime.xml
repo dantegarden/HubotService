@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration version="0.1">
+	<hubot-interface name="ODOO_JIABAN_APPLY" executable="true">
+	    <description>协助用户填写加班申请单</description>
+	    <answer>处理完毕，这是你的加班申请表</answer>
+	    <postObject>
+	        <object>
+	    		<entry key="model" type="string">apply.for.overtime</entry>
+	        	<entry key="method" type="string">create</entry>
+	        	<entry key="args" type="list">
+	        		<list>
+	        			<object>
+	        				<entry key="startTimeOfOvertime" type="date" comment="开始时间" slot="user_jiaban_stime" required="true" />
+				    		<entry key="endTimeOfOvertime" type="date" comment="结束时间" slot="user_jiaban_etime" required="true" />
+				    		<entry key="reasonOfOvertime" type="string" comment="加班理由" slot="user_jiaban_reason" />				    		
+	        			</object>
+	        		</list>
+				</entry>
+				<entry key="kwargs" type="object">
+					<object>
+						<entry key="context" type="object">
+							<object>
+								<entry key="lang" type="string">zh_CN</entry>
+								<entry key="tz" type="string">Asia/Hong_Kong</entry>
+							</object>
+						</entry>
+					</object>
+				</entry>
+	        </object>
+	    </postObject>
+	    <entryUrl>http://192.168.1.106:8069/drisChat</entryUrl>
+	    <dictUrl>http://139.129.225.173:7060/rpc/fields_get</dictUrl>
+	</hubot-interface>
+	
+	<hubot-interface name="ODOO_JIABAN_QUERY" executable="true">
+	    <description>查询加班记录</description>
+	    <answer>查询结果如下</answer>
+	    <postObject>
+	        <object>
+	    		<entry key="model" type="string">apply.for.overtime</entry>
+	        	<entry key="method" type="string">search_read</entry>
+	        	<entry key="domain" type="list">
+	        		<list>
+	        			<condition key="startTimeOfOvertime" 
+	        					   slot="user_jiaban_stime"
+	        					   type="date"
+	        					   comment="开始时间"
+	        					   class="customStartTimeSlotCondition" />
+	        			<condition key="endTimeOfOvertime" 
+	        					   slot="user_jiaban_etime"
+	        					   type="date" date-ref="user_jiaban_stime" 
+	        					   comment="结束时间"
+	        					   class="customEndTimeSlotCondition" />
+	        			<condition key="state" 
+	        					   slot="user_jiaban_status"
+	        					   type="selection"
+	        					   comment="状态" />
+	        			<condition key="department" 
+	        					   slot="user_jiaban_division"
+	        					   type="string"
+	        					   comment="部门" />	
+	        		</list>
+				</entry>
+				<entry key="kwargs" type="object">
+					<object>
+						<entry key="context" type="object">
+							<object>
+								<entry key="lang" type="string">zh_CN</entry>
+								<entry key="tz" type="string">Asia/Hong_Kong</entry>
+							</object>
+						</entry>
+					</object>
+				</entry>
+	        </object>
+	    </postObject>
+	    <entryUrl>http://192.168.1.106:8069/drisChat</entryUrl>
+	    <dictUrl>http://139.129.225.173:7060/rpc/fields_get</dictUrl>
+	</hubot-interface>
+</configuration>
