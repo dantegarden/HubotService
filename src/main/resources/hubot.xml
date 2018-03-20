@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration version="0.1">
+	<hubot-import resource="hubot-config/hubot-sale-order.xml"/>
+	<hubot-import resource="hubot-config/hubot-overtime.xml"/>
+	
+</configuration>

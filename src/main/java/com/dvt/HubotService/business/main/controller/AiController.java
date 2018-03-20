@@ -81,7 +81,9 @@ public class AiController {
 		String userid = request.getParameter("userid");//"testUserId";
 		String sceneid = request.getParameter("sceneid");//"testUserId";
 		//String scene_id = "17699";//加班
-		return analysis(myMes, userid, sceneid);
+		Result r =  analysis(myMes, userid, sceneid);
+		System.out.println(JsonUtils.JavaBeanToJson(r));
+		return r;
 	}
 	
 	/**
