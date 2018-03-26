@@ -16,6 +16,7 @@ import org.apache.commons.collections.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dom4j.Element;
 
+import com.dvt.HubotService.commons.utils.CommonHelper;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -134,7 +135,7 @@ public class HubotInterface  implements Cloneable, Serializable {
 						if(StringUtils.isNotBlank(defaultValue))
 							ebo.setIsInUse(Boolean.TRUE);
 						if(StringUtils.isNotBlank(useClass))
-							ebo.setUseClass(useClass);
+							ebo.setUseClass(CommonHelper.toLowerCaseFirstOne(useClass));
 						if(StringUtils.isNotBlank(useMethod))
 							ebo.setUseMethod(useMethod);
 						argEntryMap.put(slot, ebo);
@@ -189,7 +190,7 @@ public class HubotInterface  implements Cloneable, Serializable {
 					if(required!=null)
 						qbo.setRequired(required);
 					if(StringUtils.isNotBlank(useClass))
-						qbo.setUseClass(useClass);
+						qbo.setUseClass(CommonHelper.toLowerCaseFirstOne(useClass));
 					if(StringUtils.isNotBlank(useMethod))
 						qbo.setUseMethod(useMethod);
 					if(StringUtils.isNotBlank(defaultValue)){//默认值

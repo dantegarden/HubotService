@@ -40,13 +40,22 @@ public class CustomPersonNameSlotCondition implements UserDefinedSlotForConditio
 				persons = dictService.getDictByModalAndField(myHif.getDictUrl(),model,field);
 			}
 			
+			boolean bdflag = false;
 			for (DictDTO dictDTO : persons) {
 				if(HanyuPinyinHelper.comparePinyin(dictDTO.getDictKey(), qbo.getTempValue())){
 					myCondition.add(qbo.getKey());
 					myCondition.add("like");
 					myCondition.add(dictDTO.getDictKey());//id是value， 汉字名字是key
+					
+					bdflag = true;
 					break;
 				}
+			}
+			
+			if(!bdflag){
+				myCondition.add(qbo.getKey());
+				myCondition.add("like");
+				myCondition.add(qbo.getTempValue());//如果不需要纠正，就返回原值
 			}
 			
 		} catch (Exception e) {

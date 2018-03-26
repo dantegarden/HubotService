@@ -1,0 +1,4 @@
+<condition key="${key}" 
+		   slot="${slot}"
+	       type="string"
+	       comment="${name}"  />

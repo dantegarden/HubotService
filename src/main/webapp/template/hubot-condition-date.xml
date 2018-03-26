@@ -1,0 +1,10 @@
+<condition key="${key}" 
+	       slot="${slot}"
+	       type="date" date-format="yyyy-MM-dd"
+	       comment="${name}"
+	       class="customStartTimeSlotCondition" />
+<condition key="${key}"  
+	       slot="${slot}_e"
+	       type="date" date-ref="${slot}" date-format="yyyy-MM-dd"
+	       comment="${name}"
+	       class="customEndTimeSlotCondition" />

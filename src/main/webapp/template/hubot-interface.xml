@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration version="0.1">
+	<hubot-interface name="${intent}" executable="true">
+	    <description>查询${thing}</description>
+	    <answer>查询结果如下</answer>
+	    <postObject>
+	        <object>
+	    		<entry key="model" type="string">${model}</entry>
+	        	<entry key="method" type="string">search_read</entry>
+	        	<entry key="domain" type="list">
+	        		<list>
+	        			${conditions}
+	        		</list>
+				</entry>
+				<entry key="kwargs" type="object">
+					<object>
+						<entry key="context" type="object">
+							<object>
+								<entry key="lang" type="string">zh_CN</entry>
+								<entry key="tz" type="string">Asia/Hong_Kong</entry>
+							</object>
+						</entry>
+					</object>
+				</entry>
+	        </object>
+	    </postObject>
+	    <entryUrl>http://192.168.1.106:8069/drisChat</entryUrl>
+	    <dictUrl>http://139.129.225.173:7060/rpc/fields_get</dictUrl>
+	</hubot-interface>
+</configuration>

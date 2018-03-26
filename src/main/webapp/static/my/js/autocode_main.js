@@ -8,6 +8,6 @@ $(function(){
 });
 
 function start(){
-	$("#inputForm").attr("action",CTX+"/autocode/download");
+	$("#inputForm").attr("action",CTX+"/ui/download");
 	$("#inputForm").submit();
 }

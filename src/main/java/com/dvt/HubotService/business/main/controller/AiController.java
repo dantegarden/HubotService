@@ -156,7 +156,8 @@ public class AiController {
 					if(StringUtils.isNotBlank(action.getSay())){
 						say = action.getSay();
 					}
-				}else if(mySession.getResult().getQu_res().getIntent_candidates().get(0).getIntent_confidence() < 75.0){
+				}else if(mySession.getResult().getQu_res().getIntent_candidates().size()<1
+						||mySession.getResult().getQu_res().getIntent_candidates().get(0).getIntent_confidence() < 50.0){
 					//命中了某个对话单元，但可信度不足阈值
 					say = "我不知道应该怎么回答您。";
 					//迫使会话结束，移除会话缓存

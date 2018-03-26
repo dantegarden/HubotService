@@ -54,11 +54,13 @@
 	        			<condition key="user_id" 
 	        					   slot="user_xsdd_xsy"
 	        					   type="selection" code-type="res.users"
-	        					   comment="销售员"  />
+	        					   comment="销售员"
+	        					   class="customPersonNameSlotCondition"  />
 	        			<condition key="team_id" 
 	        					   slot="user_xsdd_xstd"
 	        					   type="selection" code-type="crm.team"
-	        					   comment="销售团队"  />
+	        					   comment="销售团队"
+	        					   class="customPersonNameSlotCondition"  />
 	        		</list>
 				</entry>
 				<entry key="kwargs" type="object">

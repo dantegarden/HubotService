@@ -59,7 +59,7 @@
 									<div class="form-group">
 										<label class="col-sm-3 col-md-3 col-lg-2 control-label">Odoo项目URL</label>
 										<div class="col-sm-9 col-md-9 col-lg-10">
-											<input name="odooUrl" type="text" class="form-control input-sm" value="http://101.200.124.206:4713"/>
+											<input name="odooUrl" type="text" class="form-control input-sm" value="http://139.129.225.173:7060"/>
 										</div>
 									</div>
 									
@@ -70,7 +70,7 @@
 												<div class="col-md-6">
 													<div class="input-icon icon-sm">
 														<i class="fa fa-tint"></i>
-														<input name="uname" type='text' class="form-control input-sm" value="admin" />
+														<input name="uname" type='text' class="form-control input-sm" value="driserp" />
 													</div>
 												</div>
 												<div class="col-md-6">
@@ -86,21 +86,21 @@
 									<div class="form-group">
 										<label class="col-sm-3 col-md-3 col-lg-2 control-label">数据库名</label>
 										<div class="col-sm-9 col-md-9 col-lg-10">
-											<input name="db" type="text" class="form-control input-sm" value="hospital-saas"/>
+											<input name="db" type="text" class="form-control input-sm" value="dris_erp"/>
 										</div>
 									</div>
 									
 									<div class="form-group">
 										<label class="col-sm-3 col-md-3 col-lg-2 control-label">模型名</label>
 										<div class="col-sm-9 col-md-9 col-lg-10">
-											<input name="modelName" type="text" class="form-control input-sm" value="check.list" />
+											<input name="modelName" type="text" class="form-control input-sm" value="sale.order" />
 										</div>
 									</div>
 									
 									<div class="form-group">
 										<label class="col-sm-3 col-md-3 col-lg-2 control-label">action Id</label>
 										<div class="col-sm-9 col-md-9 col-lg-10">
-											<input name="action_id" type="text" class="form-control input-sm" value="407"/>
+											<input name="action_id" type="text" class="form-control input-sm" value="380"/>
 										</div>
 									</div>
 									
@@ -113,14 +113,26 @@
 													<span class="help-block text-center">search view_id</span>
 												</div>
 												<div class="col-md-4">
-													<input type="text" name="tree_id" class="form-control input-sm" placeholder="输入列表视图id" value="825" />
+													<input type="text" name="tree_id" class="form-control input-sm" placeholder="输入列表视图id" value="" />
 													<span class="help-block text-center">tree view_id</span>
 												</div>
 												<div class="col-md-4">
-													<input type="text" name="form_id" class="form-control input-sm" placeholder="输入表单视图id" value="824"/>
+													<input type="text" name="form_id" class="form-control input-sm" placeholder="输入表单视图id" value="757"/>
 													<span class="help-block text-center">form view_id</span>
 												</div>
 											</div>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-3 col-md-3 col-lg-2 control-label">对应意图名称</label>
+										<div class="col-sm-9 col-md-9 col-lg-10">
+											<input name="intent_id" type="text" class="form-control input-sm" value="ODOO_XSDD_QUERY"/>
+										</div>
+									</div>
+									<div class="form-group">
+										<label class="col-sm-3 col-md-3 col-lg-2 control-label">数据项与词槽的对应关系(以:分隔)</label>
+										<div class="col-sm-9 col-md-9 col-lg-10">
+											<textarea name="name_slots" rows="10" cols="50" class="form-control input-sm"></textarea>
 										</div>
 									</div>
 									<!-- 

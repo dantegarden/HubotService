@@ -1,0 +1,5 @@
+<condition key="${key}" 
+	       slot="${slot}"
+	       type="selection"
+	       comment="${name}"
+	       class="customSelectionSlotCondition"  />

@@ -30,7 +30,7 @@ import com.time.nlp.TimeNormalizer;
 
 public class GlobalConstants {
 	public static final String PAGE_TEST = "test/main";
-	public static final String PAGE_AUTOCODE = "autocode/main";
+	public static final String PAGE_AUTOCODE = "ui/main";
 	
 	public static final Map<String,HubotInterface> interfaces = Maps.newHashMap();
 	public static final Map<String,String> baiduUnitErrKv = Maps.newHashMap();

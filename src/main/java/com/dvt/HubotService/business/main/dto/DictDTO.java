@@ -8,18 +8,18 @@ public class DictDTO {
 		return dictKey;
 	}
 	public void setDictKey(String dictKey) {
-		this.dictKey = dictKey;
+		this.dictKey = dictKey.trim();
 	}
 	public String getDictValue() {
 		return dictValue;
 	}
 	public void setDictValue(String dictValue) {
-		this.dictValue = dictValue;
+		this.dictValue = dictValue.trim();
 	}
 	public DictDTO(String dictKey, String dictValue) {
 		super();
-		this.dictKey = dictKey;
-		this.dictValue = dictValue;
+		this.dictKey = dictKey.trim();
+		this.dictValue = dictValue.trim();
 	}
 	public DictDTO() {
 		super();

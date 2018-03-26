@@ -470,4 +470,11 @@ public final class CommonHelper {
 //			System.out.println(Integer.parseInt(s));
 //		}
 	}
+	/**首字母小写**/
+	public static String toLowerCaseFirstOne(String s){
+		  if(Character.isLowerCase(s.charAt(0)))
+		    return s;
+		  else
+		    return (new StringBuilder()).append(Character.toLowerCase(s.charAt(0))).append(s.substring(1)).toString();
+	}
 }	

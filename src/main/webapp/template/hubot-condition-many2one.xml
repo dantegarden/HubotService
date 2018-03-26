@@ -1,0 +1,4 @@
+<condition key="${key}" 
+	       slot="${slot}"
+	       type="selection" code-type="${relation}"
+	       comment="${name}"  />
