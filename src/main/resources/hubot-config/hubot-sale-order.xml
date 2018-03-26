@@ -31,12 +31,12 @@
 	        					   type="selection"
 	        					   comment="状态"
 	        					   class="customSelectionSlotCondition"  />
-	        			<condition key="date_from" 
+	        			<condition key="data_from" 
 	        					   slot="user_xsdd_djrq"
 	        					   type="date" date-format="yyyy-MM-dd"
 	        					   comment="单据日期"
 	        					   class="customStartTimeSlotCondition" />		   
-	        			<condition key="date_from" 
+	        			<condition key="data_from" 
 	        					   slot="user_xsdd_djrq_e"
 	        					   type="date" date-ref="user_xsdd_djrq" date-format="yyyy-MM-dd"
 	        					   comment="单据日期"

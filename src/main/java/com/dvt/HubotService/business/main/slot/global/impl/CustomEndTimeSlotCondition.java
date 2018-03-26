@@ -37,6 +37,10 @@ public class CustomEndTimeSlotCondition implements UserDefinedSlotForCondition{
 			timeNlpTimeStr = CommonHelper.date2Str(cal.getTime(), CommonHelper.DF_DATE_TIME);
 		}
 		
+		if(StringUtils.isNotBlank(qbo.getDateFormat())){
+			timeNlpTimeStr = CommonHelper.formatDateStr(timeNlpTimeStr, qbo.getDateFormat());
+		}
+		
 		String relationship = RegexRelationUtils.getRelationExpression(qbo.getTempValue());
 		if(StringUtils.isBlank(relationship)){
 			relationship = "<=";

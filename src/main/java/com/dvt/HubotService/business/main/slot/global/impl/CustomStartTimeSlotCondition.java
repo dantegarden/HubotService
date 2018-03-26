@@ -39,7 +39,7 @@ public class CustomStartTimeSlotCondition implements UserDefinedSlotForCondition
 		}
 		
 		String relationship = RegexRelationUtils.getRelationExpression(qbo.getTempValue());
-		if(StringUtils.isBlank(relationship)){
+		if(StringUtils.isBlank(relationship)){//没有修饰词（不早于不晚于等等） 就要拆成两个条件
 			relationship = ">=";
 			//找出所需的所有时间变量
 			timeVars = timeVars.stream().filter(_qbo -> "date".equals(_qbo.getType())//时间字段
@@ -48,10 +48,11 @@ public class CustomStartTimeSlotCondition implements UserDefinedSlotForCondition
 													&& qbo.getSlot().equals(_qbo.getDateRef())).collect(Collectors.toList());
 			
 			if(CollectionUtils.isNotEmpty(timeVars) 
-						&& timeVars.size()==1){
+						&& timeVars.size()==1){//找到与之关联的另一个条件 即下边界
 				String timeNlpTimeStrs2 = timeNlpTimeStrs.get(1);
-
+				
 				QueryBO lowBoundaryBo = timeVars.get(0);//唯一的关联qbo
+				
 				lowBoundaryBo.getCondition().add(lowBoundaryBo.getKey());
 				lowBoundaryBo.getCondition().add("<=");
 				lowBoundaryBo.getCondition().add(timeNlpTimeStrs2);
@@ -62,12 +63,19 @@ public class CustomStartTimeSlotCondition implements UserDefinedSlotForCondition
 					if(StringUtils.equals(timeNlpTimeStr, timeNlpTimeStrs2)){
 						relationship = "=";
 						lowBoundaryBo.getCondition().clear();//yyyy-MM-dd上下边界一样，只用一个=的条件
+					}else{
+						lowBoundaryBo.getCondition().clear();
+						
+						lowBoundaryBo.getCondition().add(lowBoundaryBo.getKey());
+						lowBoundaryBo.getCondition().add("<=");
+						lowBoundaryBo.getCondition().add(timeNlpTimeStrs2);	
 					}
 				}
 				
 			}
 		}
 		
+		//有修饰符只需要一个条件
 		myCondition.add(qbo.getKey());
 		myCondition.add(relationship);
 		myCondition.add(timeNlpTimeStr);
