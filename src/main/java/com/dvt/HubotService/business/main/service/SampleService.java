@@ -6,4 +6,6 @@ import java.util.List;
 
 public interface SampleService {
 	public List<String> generateSample(File sampleDefinedFile) throws IOException;
+	
+	public List<String> generateSampleV2(File sampleDefinedFile) throws IOException;
 }

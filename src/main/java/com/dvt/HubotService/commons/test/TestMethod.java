@@ -18,6 +18,7 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.TreeSet;
@@ -44,7 +45,9 @@ import com.dvt.HubotService.business.main.service.impl.SampleServiceImpl;
 import com.dvt.HubotService.commons.utils.CommonHelper;
 import com.dvt.HubotService.commons.utils.HanyuPinyinHelper;
 import com.dvt.HubotService.commons.utils.JsonUtils;
+import com.dvt.HubotService.commons.utils.XmlRpcUtils;
 import com.google.common.collect.ImmutableList;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -139,7 +142,7 @@ public class TestMethod {
 //            e.printStackTrace();
 //        }
 //	}
-	@Test
+	//@Test
 	public void test22(){
 		List<DictDTO> sampleValues = Lists.newArrayList();
 		sampleValues.add(new DictDTO("111","a"));
@@ -151,15 +154,57 @@ public class TestMethod {
 			System.out.println(dictDTO.getDictKey());
 		}
 	}
+//	@Test
+//	public void test23(){
+//		int uid = 1;
+//		String db = "dris_erp";
+//		String uname = "driserp";
+//		String pwd = "123456";
+//		String model = "sale.order";
+//		String odooUrl = "http://139.129.225.173:7060";
+//		String url = String.format("%s/xmlrpc/2/object", odooUrl);
+//		int action_id = 380;
+//		
+//		Map context = ImmutableMap.of(
+//				"lang", "zh_CN",
+//				"tz", "Asia/Hong_Kong",
+//				"uid", uid,
+//				"show_sale", true,
+//				"params", ImmutableMap.of("action",action_id)
+//		);
+//		List domain = asList(asList("order_name","ilike","设备"));
+//		
+//		Object o = XmlRpcUtils.getXMLRPC(url, "execute_kw", asList(db, uid, pwd, model,"search_read",new ArrayList(),
+//		         new ImmutableMap.Builder<String, Object>()
+//				 .put("context", context)
+//				 .put("domain", domain)
+//				 .put("fields", asList("order_name","state"))
+//				 .put("limit", 80).build()
+//		));
+//		List r =asList((Object[])o); 
+//		for (Object object : r) {
+//			Map<String,Object> a = (HashMap)object;
+//			Set<String>akeySet = a.keySet();
+//			for (String key : akeySet) {
+//				System.out.println(key +"-->" + a.get(key));
+//			}
+//		}
+//		
+//		System.out.println("1");
+//	}
 	
-	//@Test
+//	private List asList(Object...a){
+//		return Arrays.asList(a);
+//	}
+	
+	@Test
 	public void testSample() throws Exception{
 		SampleServiceImpl sampleService = new SampleServiceImpl();
-		String filepath = "";
-		String targetpath = "";
+		String filepath = "E:\\chrome\\对话样本定义(sale-order).txt";
+		String targetpath = "E:\\chrome\\对话样本(sale-order).txt";
 		File sampleDefinedFile = new File(filepath);
 		File targetFile = new File(targetpath);
-		List<String> samples = sampleService.generateSample(sampleDefinedFile);
+		List<String> samples = sampleService.generateSampleV2(sampleDefinedFile);
 		FileUtils.writeLines(targetFile, "UTF-8", samples, false);;
 	}
 }

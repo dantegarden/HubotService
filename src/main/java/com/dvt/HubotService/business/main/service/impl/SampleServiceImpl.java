@@ -235,5 +235,104 @@ public class SampleServiceImpl implements SampleService{
 		}
         return samples;
 	}
+
+	@Override
+	public List<String> generateSampleV2(File sampleDefinedFile)
+			throws IOException {
+				List<String> samples = Lists.newArrayList();
+				
+		        File file = sampleDefinedFile;
+		        
+		        List<String> lines = FileUtils.readLines(file, "UTF-8");
+		        String thing = lines.get(0);
+		        String intent = lines.get(1);
+		        lines = lines.subList(2, lines.size());
+		        for (String line : lines) {
+					String[] lineArray = line.split("\\|");
+					
+					String slot = lineArray[0];
+					String name = lineArray[1];
+					String type = lineArray[2];
+					String example = lineArray.length==4?lineArray[3]:"";
+					
+					switch (type) {
+						case "string":{
+							String[] e = example.split(",");
+							for (int i = 0; i < e.length; i++) {
+								String sampleLine = String.format("查询%s是%s的%s", name, e[i], thing) + "\t" 
+							                      + intent + "\t"
+							                      + slot + ":" + e[i]
+							                      + "\n";
+								samples.add(sampleLine);
+							}
+							break;
+						}
+						case "selection":{
+							String[] e = example.split(",");
+							for (int i = 0; i < e.length; i++) {
+								String sampleLine = String.format("查询%s是%s的%s", name, e[i], thing) + "\t" 
+							                      + intent + "\t"
+							                      + slot + ":" + e[i]
+												  + "\n";
+								samples.add(sampleLine);
+							}
+							break;
+						}
+						case "date":{
+							
+							for (int i = 0; i < dateSampleSeq.size(); i++) {
+								String sampleLine = String.format("查询%s是%s的%s", name, dateSampleSeq.get(i), thing) + "\t" 
+							                      + intent + "\t"
+							                      + slot + ":" + dateSampleSeq.get(i)
+												  + "\n";
+								samples.add(sampleLine);
+							}
+							for (int i = 0; i < dateSampleSeq2.size(); i++) {
+								String sampleLine = String.format("查询%s是%s的%s", name, dateSampleSeq2.get(i)[0]+"到"+dateSampleSeq2.get(i)[1], thing) + "\t" 
+					                      + intent + "\t"
+					                      + slot + ":" + dateSampleSeq2.get(i)[0] + "到" + dateSampleSeq2.get(i)[1]
+										  + "\n";
+								samples.add(sampleLine);
+							}
+							break;
+						}
+						case "datetime":{
+							
+							for (int i = 0; i < dateSampleSeq.size(); i++) {
+								String sampleLine = String.format("查询%s是%s的%s", name, dateSampleSeq.get(i), thing) + "\t" 
+							                      + intent + "\t"
+							                      + slot + ":" + dateSampleSeq.get(i)
+												  + "\n";
+								samples.add(sampleLine);
+							}
+							for (int i = 0; i < dateSampleSeq2.size(); i++) {
+								String sampleLine = String.format("查询%s是%s的%s", name, dateSampleSeq2.get(i)[0]+"到"+dateSampleSeq2.get(i)[1], thing) + "\t" 
+					                      + intent + "\t"
+					                      + slot + ":" + dateSampleSeq2.get(i)[0] + "到" + dateSampleSeq2.get(i)[1]
+										  + "\n";
+								samples.add(sampleLine);
+							}
+							for (int i = 0; i < datetimeSampleSeq.size(); i++) {
+								String sampleLine = String.format("查询%s是%s的%s", name, datetimeSampleSeq.get(i), thing) + "\t" 
+							                      + intent + "\t"
+							                      + slot + ":" + datetimeSampleSeq.get(i)
+												  + "\n";
+								samples.add(sampleLine);
+							}
+							for (int i = 0; i < datetimeSampleSeq2.size(); i++) {
+								String sampleLine = String.format("查询%s是%s的%s", name, datetimeSampleSeq2.get(i)[0]+"到"+datetimeSampleSeq2.get(i)[1], thing) + "\t" 
+					                      + intent + "\t"
+					                      + slot + ":" + datetimeSampleSeq2.get(i)[0] + "到" + datetimeSampleSeq2.get(i)[1]
+										  + "\n";
+								samples.add(sampleLine);
+							}
+							break;
+						}
+					default:
+						break;
+					}
+				}
+		        return samples;
+	}
 	
 }
